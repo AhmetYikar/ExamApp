@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Reflection;
 
 namespace ExamApp.DAL
 {
@@ -11,7 +12,11 @@ namespace ExamApp.DAL
             : base(options)
         {
         }
-
+      
         public DbSet<Question> Questions { get; set; }
+        public DbSet<Exam> Exams { get; set; }
+        public DbSet<UserAnswer> UserAnswers { get; set; }
+        public DbSet<UserExamResult> UserExamResults { get; set; }
+        
     }
 }
