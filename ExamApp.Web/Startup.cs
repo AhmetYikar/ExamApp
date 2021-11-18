@@ -39,8 +39,7 @@ namespace ExamApp.Web
             services.AddDefaultIdentity<ExamAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            //
-            services.AddCoreAdmin();
+                    
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

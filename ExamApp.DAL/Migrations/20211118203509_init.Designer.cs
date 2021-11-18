@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExamApp.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211117202142_init")]
+    [Migration("20211118203509_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,11 +36,15 @@ namespace ExamApp.DAL.Migrations
                     b.Property<string>("ModifiedById")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Text")
+                        .HasMaxLength(4096)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TextTitle")
+                        .HasMaxLength(512)
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("ModifiedById");
 
                     b.ToTable("Exams");
                 });
@@ -77,11 +81,7 @@ namespace ExamApp.DAL.Migrations
                     b.Property<int>("ExamId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("QuestionText")
-                        .HasMaxLength(4096)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("QuestionTitle")
+                    b.Property<string>("QuestionContent")
                         .IsRequired()
                         .HasMaxLength(512)
                         .HasColumnType("TEXT");
@@ -207,10 +207,6 @@ namespace ExamApp.DAL.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
@@ -261,8 +257,6 @@ namespace ExamApp.DAL.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -346,28 +340,6 @@ namespace ExamApp.DAL.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("ExamApp.Entity.ExamAppUser", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.HasDiscriminator().HasValue("ExamAppUser");
-                });
-
-            modelBuilder.Entity("ExamApp.Entity.Exam", b =>
-                {
-                    b.HasOne("ExamApp.Entity.ExamAppUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("ExamApp.Entity.ExamAppUser", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("ModifiedBy");
                 });
 
             modelBuilder.Entity("ExamApp.Entity.Question", b =>

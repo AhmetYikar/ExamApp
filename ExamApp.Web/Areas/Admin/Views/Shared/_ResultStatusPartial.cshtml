@@ -1,0 +1,15 @@
+﻿@model ResultStatusViewModel
+
+@if (Model != null)
+{
+    if (!String.IsNullOrEmpty(Model.Message))
+    {
+        var statusMessageClass = Model.Tag == Tag.Danger ? "danger" : Model.Tag == Tag.Info ? "info" : "success";
+        <div class="alert alert-@statusMessageClass alert-dismissible text-center" role="alert" style="font-size:13px;">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            @Model.Message
+        </div>
+    }
+}
+@{
+}

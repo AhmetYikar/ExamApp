@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ExamApp.Entity
 {
-    public enum Answer : byte
+    public enum Answer 
     {
         A,
         B,
@@ -18,12 +18,7 @@ namespace ExamApp.Entity
         [Required(ErrorMessage = "Soru boş geçilemez.")]
         [MaxLength(512, ErrorMessage = "Soru 512 karakterden uzun olamaz.")]
         [Display(Name ="Soru")]
-        public string QuestionTitle { get; set; }
-
-        [MaxLength(4096, ErrorMessage = "Soru metni 4096 karakterden uzun olamaz.")]
-        [Display(Name = "Soru Metni")]
-        public string QuestionText { get; set; }
-
+        public string QuestionContent { get; set; }
 
         [Required(ErrorMessage = "Şıklar boş geçilemez.")]
         [MaxLength(512, ErrorMessage = "Şıklar 512 karakterden uzun olamaz.")]
