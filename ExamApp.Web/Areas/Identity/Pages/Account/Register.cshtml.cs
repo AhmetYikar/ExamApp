@@ -18,6 +18,7 @@ using Microsoft.Extensions.Logging;
 namespace ExamApp.Web.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
+    //[Authorize(Roles ="admin")]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ExamAppUser> _signInManager;

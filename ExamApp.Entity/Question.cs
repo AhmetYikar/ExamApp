@@ -11,7 +11,7 @@ namespace ExamApp.Entity
         C,
         D
     }
-    public class Question : IValidatableObject
+    public class Question 
     {
         public int Id { get; set; }       
 
@@ -42,10 +42,6 @@ namespace ExamApp.Entity
         public int ExamId { get; set; }
         public Exam Exam { get; set; }
 
-        //for custom model validation 
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

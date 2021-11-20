@@ -1,26 +1,10 @@
 ﻿@model Exam
-
-
 @{
     ViewData["Title"] = "Sınav Oluştur";
     Layout = "_Layout";
     var articles = ViewBag.Articles as List<ArticleViewModel>;
 
 }
-<style>
-    .site-bg {
-        background-color: #d9edf7;
-        color: dimgray;
-    }
-
-    .site-border {
-        border: 1px solid #bce8f1;
-    }
-
-    .site-shadow {
-        box-shadow: 0 .125rem .25rem rgba(188,232,241,.075) !important;
-    }
-</style>
 
 <div class="container mt-4">
     <div class="card site-border site-shadow">
@@ -70,22 +54,22 @@
                                 <input placeholder="Soru @(i+1)" asp-for="@Model.Questions[i].QuestionContent" class="form-control mb-2" />
                                 <span asp-validation-for="@Model.Questions[i].QuestionContent" class="text-danger"></span>
                                 <div class="row">
-                                    <div class="col">
+                                    <div class="col mb-2">
                                         <input id="@i" placeholder="A)" asp-for="@Model.Questions[i].A" class="form-control" />
                                         <span asp-validation-for="@Model.Questions[i].A" class="text-danger"></span>
                                     </div>
-                                    <div class="col">
-                                        <input placeholder="B)" asp-for="@Model.Questions[i].B" class="form-control mb-2" />
+                                    <div class="col mb-2">
+                                        <input placeholder="B)" asp-for="@Model.Questions[i].B" class="form-control" />
                                         <span asp-validation-for="@Model.Questions[i].B" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col">
-                                        <input placeholder="C)" asp-for="@Model.Questions[i].C" class="form-control mb-2 test" />
+                                    <div class="col mb-2">
+                                        <input placeholder="C)" asp-for="@Model.Questions[i].C" class="form-control" />
                                         <span asp-validation-for="@Model.Questions[i].C" class="text-danger"></span>
                                     </div>
-                                    <div class="col">
-                                        <input placeholder="D)" asp-for="@Model.Questions[i].D" class="form-control mb-2" />
+                                    <div class="col mb-2">
+                                        <input placeholder="D)" asp-for="@Model.Questions[i].D" class="form-control" />
                                         <span asp-validation-for="@Model.Questions[i].D" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -101,9 +85,10 @@
                                         }
                                         <option selected="selected">Doğru Cevap seç</option>
                                     </select>
+                                </div>
+                                <div class="text-center">
                                     <span asp-validation-for="@Model.Questions[i].Answer" class="text-danger"></span>
                                 </div>
-
                             </div>
                         }
                     }

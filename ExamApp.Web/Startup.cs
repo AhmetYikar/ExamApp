@@ -39,7 +39,7 @@ namespace ExamApp.Web
             services.AddDefaultIdentity<ExamAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-                    
+            services.AddSession();        
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
@@ -65,7 +65,7 @@ namespace ExamApp.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

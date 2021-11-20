@@ -1,45 +1,49 @@
 ﻿@model ExamApp.Entity.Exam
-
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
 }
 
-<h1>Delete</h1>
+<div class="container mt-4">
+    <div class="card site-border site-shadow">
+        <div class="card-header site-bg">
+            <h5>Silmek İstediğinize Emin Misiniz?</h5>
+        </div>
+        <div class="card-body p-1 p-md-5">
+            <div class="col-md-12">
+                <dl class="row">
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.TextTitle)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.TextTitle)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.Text)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.Raw(Model.Text)
+                    </dd>
+                    <dt class="col-sm-3">
+                        @Html.DisplayNameFor(model => model.CreatedAt)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.CreatedAt)
+                    </dd>
+                 
+                </dl>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Exam</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TextTitle)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TextTitle)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Text)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Text)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ModifiedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ModifiedAt)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="text-right">
+                        <a class="btn btn-outline-warning mr-2" asp-action="Index">Listeye Dön</a>
+                        <input type="submit" value="Sil" class="btn btn-outline-danger" />
+                    </div>
+                    
+
+                </form>
+            </div>
+        </div>
+
+    </div>
 </div>

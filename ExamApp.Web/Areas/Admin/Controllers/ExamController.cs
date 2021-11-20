@@ -8,14 +8,14 @@ using Microsoft.EntityFrameworkCore;
 using ExamApp.DAL;
 using ExamApp.Entity;
 using ExamApp.Web.Areas.Admin.ViewModels;
-using ExamApp.Web.Models;
-using System.Text.Json;
 using ExamApp.Web.Areas.Admin.Helper;
-
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ExamApp.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    //[Authorize(Roles ="admin")]
     public class ExamController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -24,32 +24,14 @@ namespace ExamApp.Web.Areas.Admin.Controllers
         {
             _context = context;
         }
-
-        // GET: Admin/Exam
+       
         public async Task<IActionResult> Index()
         {
+            var statusMessageHelper = new StatusMessageHelper();
+            ViewBag.ResultStatus = statusMessageHelper.GetStatusMessage(HttpContext);
             return View(await _context.Exams.ToListAsync());
-        }
-
-        // GET: Admin/Exam/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var exam = await _context.Exams
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (exam == null)
-            {
-                return NotFound();
-            }
-
-            return View(exam);
-        }
-
-        // GET: Admin/Exam/Create
+        }     
+                
         public IActionResult Create()
         {
             var model = new Exam();
@@ -72,107 +54,76 @@ namespace ExamApp.Web.Areas.Admin.Controllers
                     Message = articlesResult.ErrorMessage,
                     Tag = Tag.Danger
                 };
+
             }           
 
             return View(model);
         }
 
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TextTitle,Text,Questions")] Exam exam)
         {
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
+              
+                var articlesResult = HtmlAgilityHelper.GetLastFiveArticles("https://www.wired.com/most-recent/");
+                if (articlesResult.IsSuccess)
                 {
-                    var user = _context.Users.FirstOrDefault(a => a.UserName == User.Identity.Name);
-                    if (user != null)
-                    {
-                        exam.CreatedById = user.Id;
-                    }
-                    exam.CreatedAt = DateTime.UtcNow;
-                    _context.Add(exam);
-                    await _context.SaveChangesAsync();
-                    TempData["ResultStatus"] = new ResultStatusViewModel
-                    {
-                        Message = "Sınav başarıyla oluşturuldu",
-                        Tag = Tag.Success
-                    };
-                    return RedirectToAction(nameof(Index));
+                    ViewBag.Articles = articlesResult.Articles;
+                    //ViewBag.JsonStringArticlesContents = JsonSerializer.Serialize(articlesResult.Articles.Select(a=>a.Content).ToList());
+
+                    //first article will be the default
+                    exam.TextTitle = articlesResult.Articles.FirstOrDefault().Title;
+                    exam.Text = articlesResult.Articles.FirstOrDefault().Content;
                 }
-                catch
+                ViewBag.ResultStatus = new ResultStatusViewModel
                 {
-                    ViewBag.ResultStatus = new ResultStatusViewModel
-                    {
-                        Message = "Sınav oluşturulurken bir hata oluştu",
-                        Tag = Tag.Danger
-                    };
-                    return View(exam);
-                }
-
+                    Message = "Sınav oluşturma başarısız! Lütfen bütün alanları doldurduğunuzdan emin olun.",
+                    Tag = Tag.Danger
+                };
+                return View(exam);
             }
-
-            ViewBag.ResultStatus = new ResultStatusViewModel
+            try
             {
-                Message = "Sınav oluşturma başarısız! Lütfen bütün alanları doldurduğunuzdan emin olun.",
-                Tag = Tag.Danger
-            };
-            return View(exam);
-        }
-
-        // GET: Admin/Exam/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var exam = await _context.Exams.FindAsync(id);
-            if (exam == null)
-            {
-                return NotFound();
-            }
-            return View(exam);
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TextTitle,Text,CreatedAt,ModifiedAt")] Exam exam)
-        {
-            if (id != exam.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                var user = _context.Users.FirstOrDefault(a => a.UserName == User.Identity.Name);
+                if (user != null)
                 {
-                    _context.Update(exam);
-                    await _context.SaveChangesAsync();
+                    exam.CreatedById = user.Id;
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ExamExists(exam.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                exam.CreatedAt = DateTime.UtcNow;
+                _context.Add(exam);
+                await _context.SaveChangesAsync();
+
+                HttpContext.Session.SetString("message", "Sınav başarıyla oluşturuldu.");
+                HttpContext.Session.SetString("tag", Tag.Success.ToString());   
+                
                 return RedirectToAction(nameof(Index));
             }
-            return View(exam);
-        }
+            catch
+            {
+             
+                var articlesResult = HtmlAgilityHelper.GetLastFiveArticles("https://www.wired.com/most-recent/");
+                if (articlesResult.IsSuccess)
+                {
+                    ViewBag.Articles = articlesResult.Articles;
+                    //ViewBag.JsonStringArticlesContents = JsonSerializer.Serialize(articlesResult.Articles.Select(a=>a.Content).ToList());
 
-        // GET: Admin/Exam/Delete/5
+                    //first article will be the default
+                    exam.TextTitle = articlesResult.Articles.FirstOrDefault().Title;
+                    exam.Text = articlesResult.Articles.FirstOrDefault().Content;
+                }
+                ViewBag.ResultStatus = new ResultStatusViewModel
+                {
+                    Message = "Sınav oluşturulurken bir hata oluştu",
+                    Tag = Tag.Danger
+                };
+                return View(exam);
+            }
+
+        }
+              
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -190,7 +141,7 @@ namespace ExamApp.Web.Areas.Admin.Controllers
             return View(exam);
         }
 
-        // POST: Admin/Exam/Delete/5
+       
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -198,6 +149,8 @@ namespace ExamApp.Web.Areas.Admin.Controllers
             var exam = await _context.Exams.FindAsync(id);
             _context.Exams.Remove(exam);
             await _context.SaveChangesAsync();
+            HttpContext.Session.SetString("message", "Sınav başarıyla silindi.");
+            HttpContext.Session.SetString("tag", Tag.Success.ToString());
             return RedirectToAction(nameof(Index));
         }
 
