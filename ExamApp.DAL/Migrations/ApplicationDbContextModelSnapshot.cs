@@ -35,10 +35,11 @@ namespace ExamApp.DAL.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Text")
-                        .HasMaxLength(4096)
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TextTitle")
+                        .IsRequired()
                         .HasMaxLength(512)
                         .HasColumnType("TEXT");
 
@@ -58,7 +59,7 @@ namespace ExamApp.DAL.Migrations
                         .HasMaxLength(512)
                         .HasColumnType("TEXT");
 
-                    b.Property<byte>("Answer")
+                    b.Property<int>("Answer")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("B")
@@ -97,7 +98,7 @@ namespace ExamApp.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<byte>("Answer")
+                    b.Property<int>("Answer")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("AnswerDate")

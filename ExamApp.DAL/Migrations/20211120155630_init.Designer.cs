@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExamApp.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211118203509_init")]
+    [Migration("20211120155630_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,10 +37,11 @@ namespace ExamApp.DAL.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Text")
-                        .HasMaxLength(4096)
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TextTitle")
+                        .IsRequired()
                         .HasMaxLength(512)
                         .HasColumnType("TEXT");
 
@@ -60,7 +61,7 @@ namespace ExamApp.DAL.Migrations
                         .HasMaxLength(512)
                         .HasColumnType("TEXT");
 
-                    b.Property<byte>("Answer")
+                    b.Property<int>("Answer")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("B")
@@ -99,7 +100,7 @@ namespace ExamApp.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<byte>("Answer")
+                    b.Property<int>("Answer")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("AnswerDate")

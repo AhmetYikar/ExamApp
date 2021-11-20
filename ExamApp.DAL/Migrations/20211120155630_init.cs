@@ -52,8 +52,8 @@ namespace ExamApp.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    TextTitle = table.Column<string>(type: "TEXT", maxLength: 512, nullable: true),
-                    Text = table.Column<string>(type: "TEXT", maxLength: 4096, nullable: true),
+                    TextTitle = table.Column<string>(type: "TEXT", maxLength: 512, nullable: false),
+                    Text = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreatedById = table.Column<string>(type: "TEXT", nullable: true),
                     ModifiedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
@@ -181,7 +181,7 @@ namespace ExamApp.DAL.Migrations
                     B = table.Column<string>(type: "TEXT", maxLength: 512, nullable: false),
                     C = table.Column<string>(type: "TEXT", maxLength: 512, nullable: false),
                     D = table.Column<string>(type: "TEXT", maxLength: 512, nullable: false),
-                    Answer = table.Column<byte>(type: "INTEGER", nullable: false),
+                    Answer = table.Column<int>(type: "INTEGER", nullable: false),
                     ExamId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -224,7 +224,7 @@ namespace ExamApp.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Answer = table.Column<byte>(type: "INTEGER", nullable: false),
+                    Answer = table.Column<int>(type: "INTEGER", nullable: false),
                     UserId = table.Column<string>(type: "TEXT", nullable: true),
                     QuestionId = table.Column<int>(type: "INTEGER", nullable: false),
                     AnswerDate = table.Column<DateTime>(type: "TEXT", nullable: false)

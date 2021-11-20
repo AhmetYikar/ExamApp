@@ -16,9 +16,9 @@ namespace ExamApp.Entity
         [Required(ErrorMessage = "Sınav metni boş geçilemez.")]
         public string TextTitle { get; set; }
 
-        [MaxLength(4096, ErrorMessage = "Sınav metni 4096 karakterden uzun olamaz.")]
+      
         [Display(Name = "Sınav Metni")]
-        [Required(ErrorMessage = "Sınav metni başlığı boş geçilemez.")]
+        [Required(ErrorMessage = "Sınav metni boş geçilemez.")]
         public string Text { get; set; }
 
         [Display(Name = "Oluşturma Tarihi")]

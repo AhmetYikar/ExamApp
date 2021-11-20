@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using ExamApp.DAL;
 using ExamApp.Entity;
 using ExamApp.Web.Areas.Admin.ViewModels;
+using ExamApp.Web.Models;
+using System.Text.Json;
+using ExamApp.Web.Areas.Admin.Helper;
+
 
 namespace ExamApp.Web.Areas.Admin.Controllers
 {
@@ -48,14 +52,38 @@ namespace ExamApp.Web.Areas.Admin.Controllers
         // GET: Admin/Exam/Create
         public IActionResult Create()
         {
-            return View(new Exam());
+            var model = new Exam();
+
+
+            var articlesResult = HtmlAgilityHelper.GetLastFiveArticles("https://www.wired.com/most-recent/");
+            if (articlesResult.IsSuccess)
+            {
+                ViewBag.Articles = articlesResult.Articles;
+                //ViewBag.JsonStringArticlesContents = JsonSerializer.Serialize(articlesResult.Articles.Select(a=>a.Content).ToList());
+
+                //first article will be the default
+                model.TextTitle = articlesResult.Articles.FirstOrDefault().Title;
+                model.Text = articlesResult.Articles.FirstOrDefault().Content;
+            }
+            else
+            {
+                ViewBag.ResultStatus = new ResultStatusViewModel
+                {
+                    Message = articlesResult.ErrorMessage,
+                    Tag = Tag.Danger
+                };
+            }           
+
+            return View(model);
         }
+
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TextTitle,Text,Questions")] Exam exam)
         {
+
             if (ModelState.IsValid)
             {
                 try
@@ -70,14 +98,14 @@ namespace ExamApp.Web.Areas.Admin.Controllers
                     await _context.SaveChangesAsync();
                     TempData["ResultStatus"] = new ResultStatusViewModel
                     {
-                        Message="Sınav başarıyla oluşturuldu",
-                        Tag=Tag.Success
+                        Message = "Sınav başarıyla oluşturuldu",
+                        Tag = Tag.Success
                     };
                     return RedirectToAction(nameof(Index));
                 }
                 catch
                 {
-                   ViewBag.ResultStatus = new ResultStatusViewModel
+                    ViewBag.ResultStatus = new ResultStatusViewModel
                     {
                         Message = "Sınav oluşturulurken bir hata oluştu",
                         Tag = Tag.Danger

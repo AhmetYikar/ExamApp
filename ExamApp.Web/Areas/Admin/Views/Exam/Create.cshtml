@@ -1,69 +1,155 @@
 ﻿@model Exam
 
+
 @{
     ViewData["Title"] = "Sınav Oluştur";
     Layout = "_Layout";
+    var articles = ViewBag.Articles as List<ArticleViewModel>;
+
 }
+<style>
+    .site-bg {
+        background-color: #d9edf7;
+        color: dimgray;
+    }
 
+    .site-border {
+        border: 1px solid #bce8f1;
+    }
 
-<hr />
-<div class="col-md-12">
-    <partial name="_ResultStatusPartial" model="@ViewBag.ResultStatus" />
-    <form asp-action="Create">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="TextTitle" class="control-label"></label>
-            <input asp-for="TextTitle" class="form-control" />
-            <span asp-validation-for="TextTitle" class="text-danger"></span>
+    .site-shadow {
+        box-shadow: 0 .125rem .25rem rgba(188,232,241,.075) !important;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="card site-border site-shadow">
+        <div class="card-header site-bg">
+            <h5>Sınav Oluştur</h5>
         </div>
-        <div class="form-group">
-            <label asp-for="Text" class="control-label"></label>
-            <textarea asp-for="Text" class="form-control"></textarea>
-            <span asp-validation-for="Text" class="text-danger"></span>
-        </div>
-        @{
+        <form asp-action="Create">
+            <div class="card-body p-1 p-md-5">
+                <div class="col-md-12">
+                    <partial name="_ResultStatusPartial" model="@ViewBag.ResultStatus" />
 
-            for (int i = 0; i < 4; i++)
-            {
-                var emptyQuestion = new Question();               
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="TextTitle" class="control-label"></label>
+                        <input asp-for="TextTitle" type="hidden" />
+                        <select id="textTitleSelect" asp-for="TextTitle" class="form-control">
+                            @{
+                                if (articles != null)
+                                {
+                                    foreach (var item in articles)
+                                    {
+                                        <option value="@articles.IndexOf(item)">@item.Title</option>
+                                    }
+                                }
+                            }
 
-                Model.Questions.Add(emptyQuestion);
-
-                <div class="form-group">
-                    <input asp-for="@Model.Questions[i].QuestionContent" class="form-control mb-2" />
-                    <span asp-validation-for="@Model.Questions[i].QuestionContent" class="text-danger"></span>
-                    <div class="row container">
-                        <input asp-for="@Model.Questions[i].A" class="form-control col-md-6 mb-2" />
-                        <span asp-validation-for="@Model.Questions[i].A" class="text-danger"></span>
-                        <input asp-for="@Model.Questions[i].B" class="form-control col-md-6 mb-2" />
-                        <span asp-validation-for="@Model.Questions[i].B" class="text-danger"></span>
-                        <input asp-for="@Model.Questions[i].C" class="form-control col-md-6 mb-2" />
-                        <span asp-validation-for="@Model.Questions[i].C" class="text-danger"></span>
-                        <input asp-for="@Model.Questions[i].D" class="form-control col-md-6 mb-2" />
-                        <span asp-validation-for="@Model.Questions[i].D" class="text-danger"></span>
+                        </select>
+                        <span asp-validation-for="TextTitle" class="text-danger"></span>
                     </div>
-                    @*<select asp-for="@Model.Questions[i].Answer" class="form-control" asp-items="Html.GetEnumSelectList<Answer>()">
-                      <option>Doğru Cevap seç</option> </select>*@
+                    <div class="form-group">
+                        <label asp-for="Text" class="control-label"></label>
+                        <div id="examTextDiv" style="height:fit-content" class="form-control">@(Html.Raw(Model.Text))</div>
+                        <input type="hidden" asp-for="Text" />
+                        <span asp-validation-for="Text" class="text-danger"></span>
+                    </div>
+                    @{
 
-                    <select asp-for="@Model.Questions[i].Answer" class="form-control">
-
-                        @foreach (Answer amswer in Enum.GetValues(typeof(Answer)))
+                        for (int i = 0; i < 4; i++)
                         {
-                            <option selected="false">@amswer</option>
+                            var emptyQuestion = new Question();
+
+                            Model.Questions.Add(emptyQuestion);
+                            @*<p class="text-center">
+                                ***
+                            </p>*@
+                            <div class="form-group">
+                                <input placeholder="Soru @(i+1)" asp-for="@Model.Questions[i].QuestionContent" class="form-control mb-2" />
+                                <span asp-validation-for="@Model.Questions[i].QuestionContent" class="text-danger"></span>
+                                <div class="row">
+                                    <div class="col">
+                                        <input id="@i" placeholder="A)" asp-for="@Model.Questions[i].A" class="form-control" />
+                                        <span asp-validation-for="@Model.Questions[i].A" class="text-danger"></span>
+                                    </div>
+                                    <div class="col">
+                                        <input placeholder="B)" asp-for="@Model.Questions[i].B" class="form-control mb-2" />
+                                        <span asp-validation-for="@Model.Questions[i].B" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <input placeholder="C)" asp-for="@Model.Questions[i].C" class="form-control mb-2 test" />
+                                        <span asp-validation-for="@Model.Questions[i].C" class="text-danger"></span>
+                                    </div>
+                                    <div class="col">
+                                        <input placeholder="D)" asp-for="@Model.Questions[i].D" class="form-control mb-2" />
+                                        <span asp-validation-for="@Model.Questions[i].D" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-center">
+                                    @*<select asp-for="@Model.Questions[i].Answer" class="form-control" asp-items="Html.GetEnumSelectList<Answer>()">
+                                    <option>Doğru Cevap seç</option> </select>*@
+                                    <select asp-for="@Model.Questions[i].Answer" class="form-control w-50">
+
+                                        @foreach (Answer amswer in Enum.GetValues(typeof(Answer)))
+                                        {
+                                            <option selected="false">@amswer</option>
+                                        }
+                                        <option selected="selected">Doğru Cevap seç</option>
+                                    </select>
+                                    <span asp-validation-for="@Model.Questions[i].Answer" class="text-danger"></span>
+                                </div>
+
+                            </div>
                         }
-                        <option selected="selected">Doğru Cevap seç</option>
-                    </select>
-                    <span asp-validation-for="@Model.Questions[i].Answer" class="text-danger"></span>
+                    }
+
                 </div>
+            </div>
+            <div class="p-3 pt-0 text-center">
+                <a asp-action="Index" class="btn btn-outline-warning float-left">Listeye Dön</a>
+                <button type="submit" class="btn btn-outline-info w-25">Sınav Oluştur </button>
+                <button type="button" onclick="clearForm()" class="btn btn-outline-secondary float-right">Temizle </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        @*var examTextsArray = JSON.parse(JSON.stringify('@ViewBag.JsonStringArticlesContents'));*@
+
+        var examTextsArray = [];
+        @{
+            if (articles!=null)
+            {
+                  for (int i = 0; i < 5; i++)
+                  {
+                     @:examTextsArray['@(i)'] = '@(Html.Raw(articles[i].Content))';
+                  }
             }
-        }
-        <div class="form-group">
-            <input type="submit" value="Create" class="btn btn-primary" />
-        </div>
-    </form>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+         }
 
+
+        $("#textTitleSelect").on("change", function () {
+            var selectedTitle = $("#textTitleSelect :selected").text();
+            var selectedValue = $("#textTitleSelect :selected").val();
+           /* console.log(selectedValue);*/
+            var selectedText = examTextsArray[selectedValue];
+            $("#TextTitle").val(selectedTitle);
+            $("#Text").val(selectedText);
+            $("#examTextDiv").html(selectedText);
+        })
+    });
+
+
+    function clearForm() {
+        $("form").find("input").val("");
+    }
+
+</script>
