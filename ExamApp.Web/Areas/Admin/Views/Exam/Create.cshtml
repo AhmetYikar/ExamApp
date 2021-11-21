@@ -55,21 +55,21 @@
                                 <span asp-validation-for="@Model.Questions[i].QuestionContent" class="text-danger"></span>
                                 <div class="row">
                                     <div class="col mb-2">
-                                        <input id="@i" placeholder="A)" asp-for="@Model.Questions[i].A" class="form-control" />
+                                        <input placeholder="A)" asp-for="@Model.Questions[i].A" class="form-control a" />
                                         <span asp-validation-for="@Model.Questions[i].A" class="text-danger"></span>
                                     </div>
                                     <div class="col mb-2">
-                                        <input placeholder="B)" asp-for="@Model.Questions[i].B" class="form-control" />
+                                        <input placeholder="B)" asp-for="@Model.Questions[i].B" class="form-control b" />
                                         <span asp-validation-for="@Model.Questions[i].B" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col mb-2">
-                                        <input placeholder="C)" asp-for="@Model.Questions[i].C" class="form-control" />
+                                        <input placeholder="C)" asp-for="@Model.Questions[i].C" class="form-control c" />
                                         <span asp-validation-for="@Model.Questions[i].C" class="text-danger"></span>
                                     </div>
                                     <div class="col mb-2">
-                                        <input placeholder="D)" asp-for="@Model.Questions[i].D" class="form-control" />
+                                        <input placeholder="D)" asp-for="@Model.Questions[i].D" class="form-control d" />
                                         <span asp-validation-for="@Model.Questions[i].D" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -129,6 +129,35 @@
             $("#TextTitle").val(selectedTitle);
             $("#Text").val(selectedText);
             $("#examTextDiv").html(selectedText);
+        })
+
+        $(".a").on("change", function () {
+            let thisVal = $(this).val();
+            if (thisVal.startsWith("A) ") == false) {
+                $(this).val("A) " + thisVal);
+            }
+           
+        })
+        $(".b").on("change", function () {
+            let thisVal = $(this).val();
+            if (thisVal.startsWith("B) ") == false) {
+                $(this).val("B) " + thisVal);
+            }
+
+        })
+        $(".c").on("change", function () {
+            let thisVal = $(this).val();
+            if (thisVal.startsWith("C) ") == false) {
+                $(this).val("C) " + thisVal);
+            }
+
+        })
+        $(".d").on("change", function () {
+            let thisVal = $(this).val();
+            if (thisVal.startsWith("D) ") == false) {
+                $(this).val("D) " + thisVal);
+            }
+
         })
     });
 

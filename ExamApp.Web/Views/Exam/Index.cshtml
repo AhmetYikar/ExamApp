@@ -1,0 +1,66 @@
+﻿@model List<ExamApp.Web.ViewModels.UserExamListViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container mt-4">
+    <div class="card border-warning">
+        <div class="card-header bg-warning d-flex justify-content-between">
+            <h5>Sınavlar</h5>
+        </div>
+
+        <div class="card-body p-1 p-md-5">
+            <div class="col-md-12">
+                <partial name="_ResultStatusPartial" model="@ViewBag.ResultStatus" />
+                <div class="table-responsive">
+                    <table class="table table-borderless table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Başlık</th>
+                                <th>Sınav Tarihi</th>
+                                <th>Doğru Sayısı</th>
+                                <th>Yanlış Sayısı</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @{
+                                var orderedList = Model.OrderBy(a => a.IsTaken).ThenByDescending(a => a.ResultDate).ToList();
+                                foreach (var item in orderedList)
+                                {
+                                    if (item.IsTaken == false)
+                                    {
+                                        <tr>
+                                            <td>@(orderedList.IndexOf(item)+1)</td>
+                                            <td>@item.TextTitle</td>
+                                            <td colspan="3"><span class="badge badge-secondary w-100">Henüz Sınava Girmediniz</span> </td>
+                                            <td><a asp-action="TakeExam" asp-route-id="@item.Id" class="btn btn-outline-success pr-2">Sınava Gir</a></td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>@(orderedList.IndexOf(item)+1)</td>
+                                            <td>@item.TextTitle</td>
+                                            <td>@item.ResultDate.Value.ToString("yyyy-MM-dd")</td>
+                                            <td>@item.CorrectAnswersCount</td>
+                                            <td>@item.WrongAnswersCount</td>
+                                            @*<td><a asp-action="" asp-route-id="@item.Id" class="btn btn-outline-info px-3">Detaylar</a></td>*@
+                                        </tr>
+                                    }
+
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -2,7 +2,12 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mt-5">
+    <h1 class="display-4 mb-3">İngilizce Sınavlar Uygulamasına Hoşgeldiniz</h1>
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <h5>Daha önce girdiğiniz sınavları ve yeni sınavları <a asp-area="Identity" asp-action="Login" asp-controller="Account"> buradan </a> giriş yaparak görebilirsiniz.</h5>
+        <h5>Henüz kayıt olmadıysanız <a asp-area="Identity" asp-action="Register" asp-controller="Account"> buradan </a> kayıt olabilirsiniz.</h5>
+    }
+
 </div>

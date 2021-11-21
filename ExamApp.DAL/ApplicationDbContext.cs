@@ -11,7 +11,7 @@ namespace ExamApp.DAL
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-        }
+        }      
       
         public DbSet<Question> Questions { get; set; }
         public DbSet<Exam> Exams { get; set; }

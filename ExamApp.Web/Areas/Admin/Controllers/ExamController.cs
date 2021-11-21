@@ -11,6 +11,7 @@ using ExamApp.Web.Areas.Admin.ViewModels;
 using ExamApp.Web.Areas.Admin.Helper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace ExamApp.Web.Areas.Admin.Controllers
 {
@@ -19,12 +20,13 @@ namespace ExamApp.Web.Areas.Admin.Controllers
     public class ExamController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public ExamController(ApplicationDbContext context)
+        private readonly UserManager<IdentityUser> _userManager;
+        public ExamController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
-       
+
         public async Task<IActionResult> Index()
         {
             var statusMessageHelper = new StatusMessageHelper();
@@ -87,11 +89,11 @@ namespace ExamApp.Web.Areas.Admin.Controllers
             }
             try
             {
-                var user = _context.Users.FirstOrDefault(a => a.UserName == User.Identity.Name);
+                var user = await _userManager.GetUserAsync(User);
                 if (user != null)
                 {
-                    exam.CreatedById = user.Id;
-                }
+                    exam.CreatedById = _userManager.GetUserId(User);
+                }               
                 exam.CreatedAt = DateTime.UtcNow;
                 _context.Add(exam);
                 await _context.SaveChangesAsync();

@@ -1,0 +1,124 @@
+﻿@model Exam
+@{
+    ViewData["Title"] = "Sınav";
+}
+
+<div class="container mt-4">
+    <div class="card border-warning site-shadow">
+        <div class="card-header bg-warning">
+            <h5>Sınav</h5>
+        </div>
+        <div class="card-body p-1 p-md-5">
+            <div class="col-md-12">
+                <partial name="_ResultStatusPartial" model="@ViewBag.ResultStatus" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <input type="hidden" asp-for="Id" value="" />
+                <div class="form-group">
+                    <h5 class="text-center text-uppercase">@Model.TextTitle</h5>
+                </div>
+                <div class="form-group">
+                    <p class="">@Html.Raw(Model.Text)</p>
+                </div>
+                <div class="row">
+                    @{
+                        foreach (var item in Model.Questions)
+                        {
+
+                            <div class="col-md-6 p-3 questionParentDiv" id="@item.Id">
+                                <div style="min-height:100px" class="d-flex align-bottom position-relative">
+                                    <p class="position-absolute" style="bottom:0">@(Model.Questions.IndexOf(item)+1)) @item.QuestionContent</p>
+                                </div>
+                                <button name="A" type="button" class="btn btn-outline-secondary w-100 text-left mb-2 btn-answer">@item.A</button>
+                                <button name="B" type="button" class="btn btn-outline-secondary w-100 text-left mb-2 btn-answer">@item.B</button>
+                                <button name="C" type="button" class="btn btn-outline-secondary w-100 text-left mb-2 btn-answer">@item.C</button>
+                                <button name="D" type="button" class="btn btn-outline-secondary w-100 text-left mb-2 btn-answer">@item.D</button>
+
+                                <input type="hidden" class="questionId" value="@item.Id" />
+                            </div>
+                        }
+                    }
+                </div>
+
+            </div>
+        </div>
+        <div class="p-3 pt-0 text-center">
+            <a asp-action="Index" class="btn btn-outline-warning float-left">Listeye Dön</a>
+            <button id="btnComplete" onclick="completeTheExam()" type="button" class="btn btn-outline-info w-25">Sınavı Tamamla </button>
+           
+        </div>
+    </div>
+</div>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const answerLetters = ["A","B","C","D"];
+    $(".btn-answer").on("click", function (index) {
+        $(this).parent().find(".btn-secondary").removeClass("btn-secondary").addClass("btn-outline-secondary");
+        $(this).removeClass("btn-outline-secondary");
+        $(this).addClass("btn-secondary");
+    });
+
+    function completeTheExam() {
+        $("#btnComplete").attr("disabled",true);
+        var userAnswers = JSON.stringify(getUserAnswers());
+        //console.log(userAnswers);
+        var examId = '@Model.Id';
+        $.ajax({
+            url: "/Exam/CompleteTheExam",
+            type: "POST",
+            data: { userAnswers, examId},
+            dataType:"json",
+            success: function (response) {
+                if (response.success == true) {
+                    response.correctAnswers.forEach(function (element) {
+                        let buttonName = answerLetters[element.answer];
+                        let userAnswer = $("#" + element.questionId).find(".btn-secondary").attr("name");
+                        let correctAnswer = answerLetters[element.answer];
+                        if (userAnswer === correctAnswer) {
+                            $("#" + element.questionId).find(".btn-secondary").removeClass("btn-secondary").addClass("btn-success");
+                        }
+                        else {
+                            $("#" + element.questionId).find(".btn-secondary").removeClass("btn-secondary").addClass("btn-danger");
+                            $("#" + element.questionId).find('button[name=' + buttonName + ']').removeClass("btn-outline-secondary").addClass("btn-success");
+                        }
+                      }
+                    );
+                    $("#btnComplete").hide();
+                }
+                else {
+                    Swal.fire({
+                        icon: 'error',                     
+                        text: response.message,
+                        
+                    })
+                }
+            }
+        });
+
+       
+    }
+
+    function getUserAnswers() {
+        var jsonObj = [];
+        var questionParentDivs = $(".questionParentDiv");
+        questionParentDivs.each(function (index, item) {
+            var answerObj = {
+            };
+            var questionId = $(this).find('.questionId').val();
+            var answer = $(this).find('.btn-secondary').attr("name");
+            console.log(answer)
+            if (answer == undefined) {
+                answer = "";
+            }
+
+            answerObj["QuestionId"] = questionId;
+            answerObj["answer"] = answer;
+
+            jsonObj.push(answerObj);
+        });
+      // console.log(jsonObj)
+        return jsonObj;
+    }
+
+</script>
