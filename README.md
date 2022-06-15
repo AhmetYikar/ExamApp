@@ -1,5 +1,5 @@
 # ExamApp Web Application
-* Exam App, Written with ASP .NET Core, is an exam preparation and exam taking web application.
+* Exam App, Written in C# with ASP .NET Core, is an exam preparation and exam taking web application.
 * Registered users can take the exams prepared by the site administrators and list their results.
 
 
